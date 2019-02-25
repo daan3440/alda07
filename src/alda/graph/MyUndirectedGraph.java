@@ -1,12 +1,26 @@
 package alda.graph;
-/*
+/**
  * ALDA07 - Grafer
- * Daniel Andersson - daan3440  
- */
+ * Daniel Andersson - daan3440
+ * @author Daniel Andersson - daan3440  
+ **/
 import java.util.List;
 
 public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
-
+/**
+ * /Users/daniel/Documents/000_eclipse_workspace/ALDA07/src/alda/graph/UndirectedGraphTest.java:16: illegal start of type
+	private UndirectedGraph<String> graph = new MyUndirectedGraph<>();
+	                                                              ^
+/Users/daniel/Documents/000_eclipse_workspace/ALDA07/src/alda/graph/UndirectedGraphTest.java:120: illegal start of type
+		Set<String> nodesInPath = new HashSet<>(path);
+		                                      ^
+/Users/daniel/Documents/000_eclipse_workspace/ALDA07/src/alda/graph/UndirectedGraphTest.java:152: illegal start of type
+			graph = new MyUndirectedGraph<>();
+			                              ^
+/Users/daniel/Documents/000_eclipse_workspace/ALDA07/src/alda/graph/UndirectedGraphTest.java:184: illegal start of type
+			graph = new MyUndirectedGraph<>();
+	
+ */
 	@Override
 	public int getNumberOfNodes() {
 		// TODO Auto-generated method stub
