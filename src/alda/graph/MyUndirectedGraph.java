@@ -1,5 +1,8 @@
 package alda.graph;
-
+/*
+ * ALDA07 - Grafer
+ * Daniel Andersson - daan3440  
+ */
 import java.util.List;
 
 public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
