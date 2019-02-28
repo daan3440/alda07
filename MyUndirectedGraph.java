@@ -1,6 +1,10 @@
 package alda.graph;
 
 import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 class MyNode<T> {
 	public MyNode(T t) {
@@ -10,6 +14,7 @@ class MyNode<T> {
 	public boolean known = false;
 	public T data;
 	public HashMap<MyNode<T>, Integer> list = new HashMap<>();
+	public LinkedList<T> visitedNodes = new LinkedList<>();
 
 //	public List<MyNode<T>> visited = new ArrayList<>();
 //	public List<MyNode<T>> unvisited = new ArrayList<>();
@@ -83,12 +88,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		}
 	}
 
-//	if(node1.equals("G")&&node2.equals("A")) {
-//		System.out.println("王八蛋");
-//
-//		System.out.println(mn.equals(n1));
-//		System.out.println(mn.list.containsKey(n2));
-//	}
 	@Override
 	public boolean isConnected(T node1, T node2) {
 		MyNode<T> n1 = new MyNode<T>(node1);
@@ -170,15 +169,71 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 				nextNode.known = false;
 			}
 		}
-		// TODO pop the parentNode
+		// TOD O pop the parentNode
 		tempList.remove(tempList.size() - 1);
 	}
 
-	int step;
-
 	@Override
 	public List<T> breadthFirstSearch(T start, T end) {
-		// TODO Auto-generated method stub
+
+		return myBFS(start, end);
+	}
+
+	public List<T> myBFS(T start, T end) {
+		HashMap<MyNode<T>, Boolean> checkVisit = new HashMap<>();
+		for (MyNode<T> mn : hs) {
+			checkVisit.put(mn, false);
+		}
+		Queue<MyNode<T>> queue = new LinkedList<>();
+		MyNode<T> s = new MyNode<T>(start);
+		for (MyNode<T> mn : hs) {
+			if (mn.data.equals(s.data)) {
+				queue.add(mn);
+				checkVisit.put(mn, true);
+				break;
+			}
+		}
+
+		if (start.equals(end)) {
+			List<T> breathList = new ArrayList<>();
+
+			breathList.add(start);
+			return breathList;
+		}
+		while (!queue.isEmpty()) {
+			checkVisit.put(queue.peek(), true);
+			MyNode<T> n = queue.peek();
+			queue.poll();
+			if (n.data.equals(end)) {
+				n.visitedNodes.add(n.data);// 加他自己
+				for (MyNode<T> mn3 : hs) {
+					if (mn3.equals(n)) {
+						mn3.visitedNodes.add(n.data);// 加他自己
+						return mn3.visitedNodes;
+					}
+				}
+			}
+			MyNode<T> temp = null;
+			for (MyNode<T> mn : hs) {
+				if (mn.data.equals(n.data)) {
+					temp = mn;
+					mn.visitedNodes.add(mn.data);
+					break;
+				}
+			}
+			for (MyNode<T> mn2 : temp.list.keySet()) {
+				if (!checkVisit.get(mn2)) {				
+					for (MyNode<T> mn3 : hs) {
+						if (mn3.equals(mn2)) {
+							mn3.visitedNodes.addAll(temp.visitedNodes);
+							break;
+						}
+					}
+					queue.add(mn2);
+					checkVisit.put(mn2, true);
+				}
+			}
+		}
 		return null;
 	}
 

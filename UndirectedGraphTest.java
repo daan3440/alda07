@@ -131,20 +131,20 @@ public class UndirectedGraphTest {
 		testPath(start, end, path);
 	}
 
-	@Test
-	public void testDepthFirstSearchFromAToJ() {
-		testDepthFirstSearch("A", "J", 5);
-	}
-
-	@Test
-	public void testDepthFirstSearchFromJToA() {
-		testDepthFirstSearch("J", "A", 5);
-	}
-
-	@Test
-	public void testDepthFirstSearchFromFToE() {
-		testDepthFirstSearch("F", "E", 3);
-	}
+//	@Test
+//	public void testDepthFirstSearchFromAToJ() {
+//		testDepthFirstSearch("A", "J", 5);
+//	}
+//
+//	@Test
+//	public void testDepthFirstSearchFromJToA() {
+//		testDepthFirstSearch("J", "A", 5);
+//	}
+//
+//	@Test
+//	public void testDepthFirstSearchFromFToE() {
+//		testDepthFirstSearch("F", "E", 3);
+//	}
 
 	@Test
 	public void testDepthFirstSearchToSameNode() {
