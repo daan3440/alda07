@@ -1,5 +1,6 @@
 package alda.graph;
 import java.util.ArrayList;
+import java.util.Collection;
 /**
  * ALDA07 - Grafer
  * Daniel Andersson - daan3440
@@ -11,7 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 class MyNode<T>{
 	//	MyNode<T> next;
@@ -26,6 +29,17 @@ class MyNode<T>{
 	public T data;
 	public HashMap<MyNode<T>, Integer> neighbourMap = new HashMap<>();
 	//	public LinkedList<MyNode<T>> neighbourList = new LinkedList<>();
+	
+	public List<MyNode<T>> getNeighbours() {
+//		Set<Entry<MyNode<T>, Integer>> set = neighbourMap.entrySet();
+//		ArrayList<Entry<MyNode<T>, Integer>> list = new ArrayList<Entry<MyNode<T>, Integer>>(set);
+//		ArrayList<MyNode<T>> sendList = list;
+		ArrayList<MyNode<T>> sendList = new ArrayList<MyNode<T>>();
+		List<MyNode<T>> result = neighbourMap.keySet().stream().collect(Collectors.toList());
+        sendList.addAll(result);
+//		sendList.add(this.neighbourMap);
+		return sendList;
+	}
 
 	public int hashCode() {
 		return data.toString().hashCode();
@@ -139,33 +153,84 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	}
 
 	private void depthFirstListBuilder(T start) {
-		MyNode<T> sNode = new MyNode<T>(start);	
-//		System.out.print(node.data + " ");
-		sNode.neighbourMap.containsValue(start);
-//		List<MyNode<T>> neighbours= sNode.getNeighbours();
-        sNode.visited=true;
-       
-			if(sNode!=null && !sNode.visited)
+		System.out.print(start + " ");
+        tmp.visited=true;
+        depthList.add(start);
+        MyNode<T> tmp = new MyNode<T>(start);
+        List<MyNode<T>> list = tmp.getNeighbours();
+		for (MyNode<T> n : list) {
+			if(n!=null && !n.visited)
 			{
-				depthFirstListBuilder(value);
+				depthFirstListBuilder((T) n);
 			}
-        }
 		}
-
-public T MinValue(MyNode<T> start) {
-
-    Map.Entry<MyNode<T>, Integer> minEntry = null;
-
-    for (Entry<MyNode<T>, Integer> entry : start.neighbourMap.entrySet()) {
-
-        if (minEntry == null
-                || entry.getValue().compareTo(minEntry.getValue()) < 0) {
-            minEntry = start;
-        }
-    }
-    return minEntry;
-
-}
+//		
+//		Stack<MyNode<T>> stack=new  Stack<MyNode<T>>();
+//		MyNode<T> tmp = new MyNode<T>(start);
+//		HashMap<MyNode<T>, Integer> tmpMap = tmp.neighbourMap;
+//		stack.add(tmp);
+//		tmp.visited=true;
+//		
+//		while (!stack.isEmpty())
+//		{
+//			MyNode<T> data = stack.pop();
+////			System.out.print(element.data + " ");
+//			
+////			ArrayList<Integer> list = new ArrayList<Integer>(tmpMap.values());
+////			for (int i = 0; i < list.size(); i++) {
+////				
+////			}
+//			List<MyNode<T>> list = data.getNeighbours();
+//			if(list != null) {
+//				System.out.println("list not empty" + " size: " + list.size());
+//				
+//				for(int i = 0 ; i < list.size(); i++) {
+//					System.out.println("HOO");
+//					
+//				}
+//				System.out.println("list not empty 2");
+//				
+//			}
+//			for (MyNode<T> n : list) {
+////				MyNode<T> n = (MyNode<T>) list.get(i);
+//				if(n!=null && !n.visited)
+//				{
+//					System.out.println("Add to stack");
+//					stack.add(n);
+//					n.visited=true;
+// 
+//				}
+//			}
+		}
+		
+		
+//		MyNode<T> sNode = new MyNode<T>(start);	
+////		System.out.print(node.data + " ");
+//		sNode.neighbourMap.containsValue(start);
+////		List<MyNode<T>> neighbours= sNode.getNeighbours();
+//        sNode.visited=true;
+//       
+//			if(sNode!=null && !sNode.visited)
+//			{
+//				depthFirstListBuilder(value);
+//			}
+//        }
+//		}
+//
+//public T MinValue(MyNode<T> start) {
+//
+//    Map.Entry<MyNode<T>, Integer> minEntry = null;
+//
+//    for (Entry<MyNode<T>, Integer> entry : start.neighbourMap.entrySet()) {
+//
+//        if (minEntry == null
+//                || entry.getValue().compareTo(minEntry.getValue()) < 0) {
+//            minEntry = start;
+//        }
+//    }
+//    return minEntry;
+//
+//}
 		
 //	}
 ////		HashMap<MyNode<T>, Integer> neighbours = sNode.neighbourMap;
