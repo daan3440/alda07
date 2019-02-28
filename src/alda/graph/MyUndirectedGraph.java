@@ -8,6 +8,7 @@ import java.util.Collection;
  **/
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,27 +18,24 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 class MyNode<T>{
-	//	MyNode<T> next;
 	boolean visited = false;
 
 	public MyNode(T data) {
-		//		next = null;
 		this.data = data;
 	}
 
-	public boolean known = false;
 	public T data;
 	public HashMap<MyNode<T>, Integer> neighbourMap = new HashMap<>();
 	//	public LinkedList<MyNode<T>> neighbourList = new LinkedList<>();
-	
-	public List<MyNode<T>> getNeighbours() {
-//		Set<Entry<MyNode<T>, Integer>> set = neighbourMap.entrySet();
-//		ArrayList<Entry<MyNode<T>, Integer>> list = new ArrayList<Entry<MyNode<T>, Integer>>(set);
-//		ArrayList<MyNode<T>> sendList = list;
-		ArrayList<MyNode<T>> sendList = new ArrayList<MyNode<T>>();
-		List<MyNode<T>> result = neighbourMap.keySet().stream().collect(Collectors.toList());
-        sendList.addAll(result);
-//		sendList.add(this.neighbourMap);
+
+	public ArrayList<T> getNeighbours() {
+		System.out.println("Neighbours!");
+		ArrayList<T> sendList = (ArrayList<T>) neighbourMap.keySet().stream().collect(Collectors.toList());
+		//			List<T> result = neighbourMap.keySet().stream().collect(Collectors.toList());
+
+		//	        sendList.addAll(result);
+		if(sendList == null)
+			System.out.println("NULL");
 		return sendList;
 	}
 
@@ -124,6 +122,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public int getCost(T node1, T node2) {
+		System.out.println(node1 + " " + node2);
 		MyNode<T> n1 = new MyNode<T>(node1);
 		MyNode<T> n2 = new MyNode<T>(node2);
 		if (!nodes.contains(n1) || !nodes.contains(n2)) {
@@ -145,140 +144,117 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public List<T> depthFirstSearch(T start, T end) {
-		//	MyNode<T> sNode = new MyNode<T>(start);
-		//	MyNode<T> eNode = new MyNode<T>(end);
-		//	depthList = null;
-		depthFirstListBuilder(start);
+		dfs(start, end);
 		return depthList;
 	}
 
-	private void depthFirstListBuilder(T start) {
-		System.out.print(start + " ");
-        tmp.visited=true;
-        depthList.add(start);
-        MyNode<T> tmp = new MyNode<T>(start);
-        List<MyNode<T>> list = tmp.getNeighbours();
-		for (MyNode<T> n : list) {
-			if(n!=null && !n.visited)
-			{
-				depthFirstListBuilder((T) n);
-			}
-		}
-//		
-//		Stack<MyNode<T>> stack=new  Stack<MyNode<T>>();
-//		MyNode<T> tmp = new MyNode<T>(start);
-//		HashMap<MyNode<T>, Integer> tmpMap = tmp.neighbourMap;
-//		stack.add(tmp);
-//		tmp.visited=true;
-//		
-//		while (!stack.isEmpty())
-//		{
-//			MyNode<T> data = stack.pop();
-////			System.out.print(element.data + " ");
-//			
-////			ArrayList<Integer> list = new ArrayList<Integer>(tmpMap.values());
-////			for (int i = 0; i < list.size(); i++) {
-////				
-////			}
-//			List<MyNode<T>> list = data.getNeighbours();
-//			if(list != null) {
-//				System.out.println("list not empty" + " size: " + list.size());
-//				
-//				for(int i = 0 ; i < list.size(); i++) {
-//					System.out.println("HOO");
-//					
-//				}
-//				System.out.println("list not empty 2");
-//				
-//			}
-//			for (MyNode<T> n : list) {
-////				MyNode<T> n = (MyNode<T>) list.get(i);
-//				if(n!=null && !n.visited)
-//				{
-//					System.out.println("Add to stack");
-//					stack.add(n);
-//					n.visited=true;
-// 
-//				}
-//			}
-		}
-		
-		
-//		MyNode<T> sNode = new MyNode<T>(start);	
-////		System.out.print(node.data + " ");
-//		sNode.neighbourMap.containsValue(start);
-////		List<MyNode<T>> neighbours= sNode.getNeighbours();
-//        sNode.visited=true;
-//       
-//			if(sNode!=null && !sNode.visited)
-//			{
-//				depthFirstListBuilder(value);
-//			}
-//        }
-//		}
-//
-//public T MinValue(MyNode<T> start) {
-//
-//    Map.Entry<MyNode<T>, Integer> minEntry = null;
-//
-//    for (Entry<MyNode<T>, Integer> entry : start.neighbourMap.entrySet()) {
-//
-//        if (minEntry == null
-//                || entry.getValue().compareTo(minEntry.getValue()) < 0) {
-//            minEntry = start;
-//        }
-//    }
-//    return minEntry;
-//
-//}
-		
-//	}
-////		HashMap<MyNode<T>, Integer> neighbours = sNode.neighbourMap;
-//		//		LinkedList<MyNode<T>> neighList= sNode.neighbourList;
-////		System.out.println(neighList.size());
-//		sNode.visited = true;
-//		depthList.add(start);
-//		System.out.println(start.toString());
-//		//	for (int i = 0; i < neighList.size(); i++) {
-////		if(!(neighList.size() == 0)) {
-//			for (MyNode<T> cmp: neighbourMap) {
-//				T cmpT = cmp.data;
-//				if(cmpT!=null && !cmp.visited)
-//				{
-//					depthFirstListBuilder(cmpT);
-//				}
-//			}
-////		}
-//	}
-	//private void depthFirstListBuilder(T ns, T end) {
-	////	Stack<Integer> stack = new Stack<Integer>();
-	//	for(MyNode<T> compare : nodes){
-	//	if(!nodes.contains(ns)) {
-	////	                stack.push(startIndex);
-	//	                depthList.add(ns);
-	//	                
-	//	while (stack.isEmpty() == false) {
-	////	int nodeIndex = stack.pop();
-	//	System.out.print(nodeIndex + " nodeIndex");
-	//	
-	//	HashSet<MyNode<T>> nodeList = nodes;
-	////	LinkedList<Integer> nodeList = nodes[nodeIndex];
-	//	for (MyNode<T> compare : nodes) {
-	//	if (!nodes.contains(end)) {
-	//		depthList.add(ns);
-	//	                        }
-	//	                    }
-	//	                }
-	//	            }
-	//	        }
-	//	System.out.println();
-	//}
+	private void dfs(T in, T exit) {
+		//		MyNode<T> current= new MyNode<T>(in);
+		//		MyNode<T> end = new MyNode<T>(exit);
+		//		MyNode<T> tmp = null;
+		//		
+		//		for (MyNode<T> tmpNode : nodes) {
+		//			if (tmpNode.data.equals(current.data)) {
+		//				tmp = tmpNode;
+		////				System.out.println(tmp + "");
+		//				break;
+		//			}
+		//		}
+		//		if (tmp == null) {
+		//			return;
+		//		}
+		//		Set<MyNode<T>> set = tmp.neighbourMap.keySet();
+		//
+		//		tempList.add(current.data);
+		//		if (current.data.equals(end.data)) {
+		//			if (depthList.isEmpty()) {
+		//				depthList.addAll(tempList);
+		//			} else {
+		//				if (tempList.size() < depthList.size()) {
+		//					depthList.clear();
+		//					depthList.addAll(tempList);
+		//				}
+		//			}
+		//			tempList.remove(tempList.size() - 1);
+		//			return;
+		//		}
+		//		// if the end-node is not found in this round,go to next round
+		//		for (MyNode<T> nextNode : set) {
+		//			// TODO push the subNode
+		//			if (!nextNode.visited) {
+		//				nextNode.visited= true;
+		//				dfs(nextNode.data, end.data);
+		//				nextNode.visited = false;
+		//			}
+		//		}
+		//		// TODO pop the parentNode
+		//		tempList.remove(tempList.size() - 1);
+	}
+	LinkedList<T> queue = new LinkedList<T>(); 
+	Set<T> visited = new HashSet<T>(); 
+
 	@Override
 	public List<T> breadthFirstSearch(T start, T end) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println(" bfs"); 
+		bfs(start, end);
+
+		return queue;
 	}
 
+	private void bfs(T start, T end ) {
+		MyNode<T> current = new MyNode<T>(start);
+		MyNode<T> last = new MyNode<T>(end);
+		//		”Set Node 1 as the start Node
+		queue.add(current.data); 
+		while (queue.size() != 0 && !current.equals(last)) 
+		{ 
+
+		//		Add this Node to the Queue
+		//		Add this Node to the visited set
+		current.visited =true;
+		
+		visited.add(current.data);
+		//		If this node is our goal node then return true, else add Node 2 and Node 3 to our Queue
+
+		//		Check Node 2 and if it isn’t add both Node 4 and Node 5 to our Queue. 
+		//		Take the next node from our Queue which should be Node 3 and check that.
+		
+		//		If Node 3 isn’t our goal node add Node 6 and Node 7 to our Queue.
+		//		Repeat until goal Node is found.”
+
+		// Mark the current node as visited and enqueue it 
+
+			// Dequeue a vertex from queue and print it 
+			current.data = queue.poll(); 
+			System.out.println(current+" current"); 
+
+			// Get all adjacent vertices of the dequeued vertex s 
+			// If a adjacent has not been visited, then mark it 
+			// visited and enqueue it 
+			ArrayList<T> list = current.getNeighbours();
+			for (T t : list) {
+				System.out.println(t+ " toString");
+			}
+			Iterator<T> i = current.getNeighbours().listIterator(); 
+			System.out.println(i+" i"); 
+			if(i.hasNext()) {
+				System.out.println(" hasNext"); 
+				
+			}
+			while (i.hasNext()) 
+			{ 
+				System.out.println(" WHUKE"); 
+				T n = i.next();
+				MyNode<T> tmp = new MyNode<T>(n);
+				if (!tmp.visited) 
+				{ 
+					tmp.visited = true; 
+					queue.add(n); 
+				} 
+			} 
+		} 
+
+	}
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
 		// TODO Auto-generated method stub
