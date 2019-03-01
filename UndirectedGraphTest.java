@@ -157,7 +157,6 @@ public class UndirectedGraphTest {
 	private void testBreadthFirstSearch(String start, String end, int expectedathLength) {
 		createExampleGraph();
 		List<String> path = graph.breadthFirstSearch(start, end);
-
 		assertEquals(expectedathLength, path.size());
 
 		testPath(start, end, path);

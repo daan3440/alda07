@@ -63,26 +63,43 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public boolean connect(T node1, T node2, int cost) {
-		MyNode<T> n1 = new MyNode<T>(node1);
-		MyNode<T> n2 = new MyNode<T>(node2);
-		if (cost <= 0 || !hs.contains(n1) || !hs.contains(n2)) {
+		MyNode<T> n1 = null;
+		MyNode<T> n2 = null;
 
+		for (MyNode<T> mn : hs) {
+
+			if (mn.data.equals(node2)) {
+				// mn.list.put(n2, cost);
+				n2 = mn;
+				break;
+			}
+		}
+		for (MyNode<T> mn : hs) {
+			if (mn.data.equals(node1)) {
+				n1 = mn;
+				// mn.list.put(n2, cost);
+				break;
+			}
+		}
+
+		if (cost <= 0 || !hs.contains(n1) || !hs.contains(n2)) {
 			return false;
 		} else {
-
+			n1.list.put(n2, cost);
+			n2.list.put(n1, cost);
 			// förbättring på koden?
-			for (MyNode<T> mn : hs) {
-				if (mn.equals(n1)) {
-					mn.list.put(n2, cost);
-					break;
-				}
-			}
-			for (MyNode<T> mn : hs) {
-				if (mn.equals(n2)) {
-					mn.list.put(n1, cost);
-					break;
-				}
-			}
+//			for (MyNode<T> mn : hs) {
+//				if (mn.equals(n1)) {
+//					mn.list.put(n2, cost);
+//					break;
+//				}
+//			}
+//			for (MyNode<T> mn : hs) {
+//				if (mn.equals(n2)) {
+//					mn.list.put(n1, cost);
+//					break;
+//				} 
+//			}
 
 			return true;
 		}
@@ -175,64 +192,33 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public List<T> breadthFirstSearch(T start, T end) {
-
-		return myBFS(start, end);
-	}
-
-	public List<T> myBFS(T start, T end) {
-		HashMap<MyNode<T>, Boolean> checkVisit = new HashMap<>();
-		for (MyNode<T> mn : hs) {
-			checkVisit.put(mn, false);
-		}
 		Queue<MyNode<T>> queue = new LinkedList<>();
-		MyNode<T> s = new MyNode<T>(start);
+		MyNode<T> current = null;
 		for (MyNode<T> mn : hs) {
-			if (mn.data.equals(s.data)) {
-				queue.add(mn);
-				checkVisit.put(mn, true);
+			if (mn.data.equals(start)) {
+				current = mn;
 				break;
 			}
 		}
+		queue.add(current);
+		current.known = true;
 
-		if (start.equals(end)) {
-			List<T> breathList = new ArrayList<>();
+		while (!queue.isEmpty() && !current.data.equals(end)) {
+			MyNode<T> n = queue.poll();		
+			n.visitedNodes.add(n.data);
 
-			breathList.add(start);
-			return breathList;
-		}
-		while (!queue.isEmpty()) {
-			checkVisit.put(queue.peek(), true);
-			MyNode<T> n = queue.peek();
-			queue.poll();
-			if (n.data.equals(end)) {
-				n.visitedNodes.add(n.data);// 加他自己
-				for (MyNode<T> mn3 : hs) {
-					if (mn3.equals(n)) {
-						mn3.visitedNodes.add(n.data);// 加他自己
-						return mn3.visitedNodes;
-					}
-				}
-			}
-			MyNode<T> temp = null;
-			for (MyNode<T> mn : hs) {
-				if (mn.data.equals(n.data)) {
-					temp = mn;
-					mn.visitedNodes.add(mn.data);
-					break;
-				}
-			}
-			for (MyNode<T> mn2 : temp.list.keySet()) {
-				if (!checkVisit.get(mn2)) {				
-					for (MyNode<T> mn3 : hs) {
-						if (mn3.equals(mn2)) {
-							mn3.visitedNodes.addAll(temp.visitedNodes);
-							break;
-						}
-					}
+			for (MyNode<T> mn2 : n.list.keySet()) {
+				if (!mn2.known) {
+					mn2.visitedNodes.addAll(n.visitedNodes);
 					queue.add(mn2);
-					checkVisit.put(mn2, true);
+					mn2.known = true;
 				}
 			}
+			current=queue.peek();			
+		}
+		if (current.data.equals(end)) {
+			current.visitedNodes.add(current.data);// 加他自己
+			return current.visitedNodes;
 		}
 		return null;
 	}
