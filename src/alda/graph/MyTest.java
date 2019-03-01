@@ -60,6 +60,11 @@ public class MyTest {
 		connect("E", "C", 2);
 		connect("E", "D", 2);
 		connect("J", "D", 5);
+		MyNode<String> m=new MyNode<String>("B");
+		System.out.println(graph.nodes.contains(m) + " node m");
+		System.out.println(graph.isConnected("B","G") + " B G");
+		System.out.println(graph.isConnected("G","B") + " G B");
+		System.out.println(graph.isConnected("F","H") + " F H");
 	}
 
 	private void testBreadthFirstSearch(String start, String end, int expectedathLength) {
@@ -69,17 +74,7 @@ System.out.println(path);
 		//testPath(start, end, path);
 	}
 
-	@Test
-	public void testBreadthFirstSearchFromAToJ() {
-
-		MyNode<String> m=new MyNode<String>("B");
-		System.out.println(graph.nodes.contains(m) + " node m");
-		System.out.println(graph.isConnected("B","G") + " B G");
-		System.out.println(graph.isConnected("G","B") + " G B");
-		System.out.println(graph.isConnected("A","G") + " A G");
-		testBreadthFirstSearch("A", "A", 5);
-
-	}
+	
 
 	private void testDepthFirstSearch(String start, String end, int minimumPathLength) {
 		createExampleGraph();
@@ -93,9 +88,9 @@ System.out.println(path);
 		//testPath(start, end, path);
 	}
 
-	public void testDepthFirstSearchFromAToJ() {
-		testDepthFirstSearch("A", "A", 5);
-	}
+//	public void testDepthFirstSearchFromAToJ() {
+//		testDepthFirstSearch("A", "A", 5);
+//	}
 
 //	public void testDepthFirstSearchFromJToA() {
 //		testDepthFirstSearch("J", "A", 5);
@@ -110,6 +105,18 @@ System.out.println(path);
 			graph = new MyUndirectedGraph<>();
 			testDepthFirstSearch(node, node, 1);
 		}
+	}
+	
+	@Test
+	public void testBreadthFirstSearchFromAToJ() {
+
+		MyNode<String> m=new MyNode<String>("B");
+		System.out.println(graph.nodes.contains(m) + " node m");
+		System.out.println(graph.isConnected("B","G") + " B G");
+		System.out.println(graph.isConnected("G","B") + " G B");
+		System.out.println(graph.isConnected("F","H") + " F H");
+		testBreadthFirstSearch("A", "A", 5);
+
 	}
 
 }
