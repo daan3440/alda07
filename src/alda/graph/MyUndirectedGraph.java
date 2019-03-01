@@ -60,7 +60,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	int nrNodes;
 	int nrEdges;
-	private HashSet<MyNode<T>> nodes = new HashSet<>();
+	HashSet<MyNode<T>> nodes = new HashSet<>();
 
 	@Override
 	public int getNumberOfNodes() {
@@ -88,19 +88,28 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	public boolean connect(T node1, T node2, int cost) {
 		MyNode<T> n1 = new MyNode<T>(node1);
 		MyNode<T> n2 = new MyNode<T>(node2);
+		System.out.print(n1.data + " n1, ");
+		System.out.print(n2.data + " n2, ");
+		System.out.println(cost + " cost");
+		if(cost<0 && n1.equals(n2)) {
+			System.out.println(" Less than 0");
+			n1.neighbourMap.put(n2, cost);
+		}
 
 		if (cost <= 0 || !nodes.contains(n1) || !nodes.contains(n2)) {
 			return false;
 		} else {
-			for (MyNode<T> compare : nodes) {
-				if (compare.equals(n1)) {
-					compare.neighbourMap.put(n2, cost);
+			for (MyNode<T> cmpNode : nodes) {
+				if (cmpNode.equals(n1)) {
+					cmpNode.neighbourMap.put(n2, cost);
+					System.out.println(cmpNode.neighbourMap.size() + " nMap Size");
 					break;
 				}
 			}
-			for (MyNode<T> mn : nodes) {
-				if (mn.equals(n2)) {
-					mn.neighbourMap.put(n1, cost);
+			for (MyNode<T> cmpNode : nodes) {
+				if (cmpNode.equals(n2)) {
+					cmpNode.neighbourMap.put(n1, cost);
+					System.out.println(cmpNode.neighbourMap.size() + " nMap Size 2");
 					break;
 				}
 			}
@@ -112,9 +121,9 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	public boolean isConnected(T node1, T node2) {
 		MyNode<T> n1 = new MyNode<T>(node1);
 		MyNode<T> n2 = new MyNode<T>(node2);
-		for (MyNode<T> compare : nodes) {
-			if (compare.equals(n1)) {
-				return compare.neighbourMap.containsKey(n2);
+		for (MyNode<T> cmpNode : nodes) {
+			if (cmpNode.equals(n1)) {
+				return cmpNode.neighbourMap.containsKey(n2);
 			}
 		}
 		return false;
@@ -122,19 +131,20 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public int getCost(T node1, T node2) {
+		int cost = 0;
 		System.out.println(node1 + " " + node2);
 		MyNode<T> n1 = new MyNode<T>(node1);
 		MyNode<T> n2 = new MyNode<T>(node2);
 		if (!nodes.contains(n1) || !nodes.contains(n2)) {
-			return -1;
+			cost = -1;
 		} else {
-			for (MyNode<T> compare : nodes) {
-				if (compare.equals(n1)) {
-					return compare.neighbourMap.get(n2);
+			for (MyNode<T> cmpNode : nodes) {
+				if (cmpNode.equals(n1) && n2 != null) {
+					cost = cmpNode.neighbourMap.get(n2);
 				}
 			}
-			return -1;
 		}
+		return cost;
 	}
 
 	//Depth first
@@ -149,63 +159,70 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	}
 
 	private void dfs(T in, T exit) {
-		//		MyNode<T> current= new MyNode<T>(in);
-		//		MyNode<T> end = new MyNode<T>(exit);
-		//		MyNode<T> tmp = null;
-		//		
-		//		for (MyNode<T> tmpNode : nodes) {
-		//			if (tmpNode.data.equals(current.data)) {
-		//				tmp = tmpNode;
-		////				System.out.println(tmp + "");
-		//				break;
-		//			}
-		//		}
-		//		if (tmp == null) {
-		//			return;
-		//		}
-		//		Set<MyNode<T>> set = tmp.neighbourMap.keySet();
-		//
-		//		tempList.add(current.data);
-		//		if (current.data.equals(end.data)) {
-		//			if (depthList.isEmpty()) {
-		//				depthList.addAll(tempList);
-		//			} else {
-		//				if (tempList.size() < depthList.size()) {
-		//					depthList.clear();
-		//					depthList.addAll(tempList);
-		//				}
-		//			}
-		//			tempList.remove(tempList.size() - 1);
-		//			return;
-		//		}
-		//		// if the end-node is not found in this round,go to next round
-		//		for (MyNode<T> nextNode : set) {
-		//			// TODO push the subNode
-		//			if (!nextNode.visited) {
-		//				nextNode.visited= true;
-		//				dfs(nextNode.data, end.data);
-		//				nextNode.visited = false;
-		//			}
-		//		}
-		//		// TODO pop the parentNode
-		//		tempList.remove(tempList.size() - 1);
+				MyNode<T> current= new MyNode<T>(in);
+				MyNode<T> end = new MyNode<T>(exit);
+				MyNode<T> tmp = null;
+				
+				for (MyNode<T> tmpNode : nodes) {
+					if (tmpNode.data.equals(current.data)) {
+						tmp = tmpNode;
+		//				System.out.println(tmp + "");
+						break;
+					}
+				}
+				if (tmp == null) {
+					return;
+				}
+				Set<MyNode<T>> set = tmp.neighbourMap.keySet();
+		
+				tempList.add(current.data);
+				if (current.data.equals(end.data)) {
+					if (depthList.isEmpty()) {
+						depthList.addAll(tempList);
+					} else {
+						if (tempList.size() < depthList.size()) {
+							depthList.clear();
+							depthList.addAll(tempList);
+						}
+					}
+					tempList.remove(tempList.size() - 1);
+					return;
+				}
+				// if the end-node is not found in this round,go to next round
+				for (MyNode<T> nextNode : set) {
+					// TODO push the subNode
+					if (!nextNode.visited) {
+						nextNode.visited= true;
+						dfs(nextNode.data, end.data);
+						nextNode.visited = false;
+					}
+				}
+				// TODO pop the parentNode
+				tempList.remove(tempList.size() - 1);
 	}
-	LinkedList<T> queue = new LinkedList<T>(); 
-	Set<T> visited = new HashSet<T>(); 
+	LinkedList<MyNode<T>> queue = new LinkedList<MyNode<T>>(); 
+	Set<MyNode<T>> visited = new HashSet<MyNode<T>>(); 
 
 	@Override
 	public List<T> breadthFirstSearch(T start, T end) {
 		System.out.println(" bfs"); 
 		bfs(start, end);
+		LinkedList<T> bfsList = null;
+		for(MyNode<T> adding : visited) {
+			if (adding.data != null) {
+				bfsList.add(adding.data);
+			}
+		}
 
-		return queue;
+		return bfsList;
 	}
 
 	private void bfs(T start, T end ) {
 		MyNode<T> current = new MyNode<T>(start);
 		MyNode<T> last = new MyNode<T>(end);
 		//		”Set Node 1 as the start Node
-		queue.add(current.data); 
+		queue.add(current); 
+//		System.out.println(current+" current"); 
 		while (queue.size() != 0 && !current.equals(last)) 
 		{ 
 
@@ -213,7 +230,10 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		//		Add this Node to the visited set
 		current.visited =true;
 		
-		visited.add(current.data);
+		visited.add(current);
+		if (visited != null)
+			System.out.println(visited.size() + " visited"); 
+			
 		//		If this node is our goal node then return true, else add Node 2 and Node 3 to our Queue
 
 		//		Check Node 2 and if it isn’t add both Node 4 and Node 5 to our Queue. 
@@ -225,7 +245,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		// Mark the current node as visited and enqueue it 
 
 			// Dequeue a vertex from queue and print it 
-			current.data = queue.poll(); 
+			current = queue.poll(); 
 			System.out.println(current+" current"); 
 
 			// Get all adjacent vertices of the dequeued vertex s 
@@ -249,7 +269,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 				if (!tmp.visited) 
 				{ 
 					tmp.visited = true; 
-					queue.add(n); 
+					queue.add(tmp); 
 				} 
 			} 
 		} 

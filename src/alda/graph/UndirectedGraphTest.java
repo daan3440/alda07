@@ -121,38 +121,38 @@ public class UndirectedGraphTest {
 		assertEquals(path.size(), nodesInPath.size());
 	}
 
-//	private void testDepthFirstSearch(String start, String end, int minimumPathLength) {
-//		createExampleGraph();
-//		List<String> path = graph.depthFirstSearch(start, end);
-//
-//		assertTrue(path.size() >= minimumPathLength);
-//		assertTrue(path.size() <= graph.getNumberOfNodes());
-//
-//		testPath(start, end, path);
-//	}
-//
-//	@Test
-//	public void testDepthFirstSearchFromAToJ() {
-//		testDepthFirstSearch("A", "J", 5);
-//	}
-//
-//	@Test
-//	public void testDepthFirstSearchFromJToA() {
-//		testDepthFirstSearch("J", "A", 5);
-//	}
-//
-//	@Test
-//	public void testDepthFirstSearchFromFToE() {
-//		testDepthFirstSearch("F", "E", 3);
-//	}
-//
-//	@Test
-//	public void testDepthFirstSearchToSameNode() {
-//		for (String node : STANDARD_NODES) {
-//			graph = new MyUndirectedGraph<>();
-//			testDepthFirstSearch(node, node, 1);
-//		}
-//	}
+	private void testDepthFirstSearch(String start, String end, int minimumPathLength) {
+		createExampleGraph();
+		List<String> path = graph.depthFirstSearch(start, end);
+
+		assertTrue(path.size() >= minimumPathLength);
+		assertTrue(path.size() <= graph.getNumberOfNodes());
+
+		testPath(start, end, path);
+	}
+
+	@Test
+	public void testDepthFirstSearchFromAToJ() {
+		testDepthFirstSearch("A", "J", 5);
+	}
+
+	@Test
+	public void testDepthFirstSearchFromJToA() {
+		testDepthFirstSearch("J", "A", 5);
+	}
+
+	@Test
+	public void testDepthFirstSearchFromFToE() {
+		testDepthFirstSearch("F", "E", 3);
+	}
+
+	@Test
+	public void testDepthFirstSearchToSameNode() {
+		for (String node : STANDARD_NODES) {
+			graph = new MyUndirectedGraph<>();
+			testDepthFirstSearch(node, node, 1);
+		}
+	}
 
 	private void testBreadthFirstSearch(String start, String end, int expectedathLength) {
 		createExampleGraph();
