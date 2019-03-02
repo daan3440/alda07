@@ -187,63 +187,63 @@ public class UndirectedGraphTest {
 		}
 	}
 
-//	@Test
-//	public void testMinimumSpanningTree() {
-//		createExampleGraph();
-//		UndirectedGraph<String> mst = graph.minimumSpanningTree();
-//
-//		int totalEdges = 0;
-//		int totalCost = 0;
-//
-//		for (char node1 = 'A'; node1 <= 'J'; node1++) {
-//			for (char node2 = node1; node2 <= 'J'; node2++) {
-//				int cost = mst.getCost("" + node1, "" + node2);
-//				if (cost > -1) {
-//					totalEdges++;
-//					totalCost += cost;
-//				}
-//			}
-//		}
-//
-//		assertEquals(9, totalEdges);
-//		assertEquals(45, totalCost);
-//	}
-//
-//	// Här börjar vi använda andra grafer
-//
-//	@Test
-//	public void testMinimumSpanningTreeFromBook() {
-//		add("V1", "V2", "V3", "V4", "V5", "V6", "V7");
-//		connect("V1", "V2", 2);
-//		connect("V1", "V3", 4);
-//		connect("V1", "V4", 1);
-//		connect("V2", "V4", 3);
-//		connect("V2", "V5", 10);
-//		connect("V3", "V4", 2);
-//		connect("V3", "V6", 5);
-//		connect("V4", "V5", 7);
-//		connect("V4", "V6", 8);
-//		connect("V4", "V7", 4);
-//		connect("V5", "V7", 6);
-//		connect("V6", "V7", 1);
-//
-//		UndirectedGraph<String> mst = graph.minimumSpanningTree();
-//
-//		int totalEdges = 0;
-//		int totalCost = 0;
-//
-//		for (int node1 = 1; node1 <= 7; node1++) {
-//			for (int node2 = node1; node2 <= 7; node2++) {
-//				int cost = mst.getCost("V" + node1, "V" + node2);
-//				if (cost > -1) {
-//					totalEdges++;
-//					totalCost += cost;
-//				}
-//			}
-//		}
-//
-//		assertEquals(6, totalEdges);
-//		assertEquals(16, totalCost);
-//	}
+	@Test
+	public void testMinimumSpanningTree() {
+		createExampleGraph();
+		UndirectedGraph<String> mst = graph.minimumSpanningTree();
+
+		int totalEdges = 0;
+		int totalCost = 0;
+
+		for (char node1 = 'A'; node1 <= 'J'; node1++) {
+			for (char node2 = node1; node2 <= 'J'; node2++) {
+				int cost = mst.getCost("" + node1, "" + node2);
+				if (cost > -1) {
+					totalEdges++;
+					totalCost += cost;
+				}
+			}
+		}
+
+		assertEquals(9, totalEdges);
+		assertEquals(45, totalCost);
+	}
+
+	// Här börjar vi använda andra grafer
+
+	@Test
+	public void testMinimumSpanningTreeFromBook() {
+		add("V1", "V2", "V3", "V4", "V5", "V6", "V7");
+		connect("V1", "V2", 2);
+		connect("V1", "V3", 4);
+		connect("V1", "V4", 1);
+		connect("V2", "V4", 3);
+		connect("V2", "V5", 10);
+		connect("V3", "V4", 2);
+		connect("V3", "V6", 5);
+		connect("V4", "V5", 7);
+		connect("V4", "V6", 8);
+		connect("V4", "V7", 4);
+		connect("V5", "V7", 6);
+		connect("V6", "V7", 1);
+
+		UndirectedGraph<String> mst = graph.minimumSpanningTree();
+
+		int totalEdges = 0;
+		int totalCost = 0;
+
+		for (int node1 = 1; node1 <= 7; node1++) {
+			for (int node2 = node1; node2 <= 7; node2++) {
+				int cost = mst.getCost("V" + node1, "V" + node2);
+				if (cost > -1) {
+					totalEdges++;
+					totalCost += cost;
+				}
+			}
+		}
+
+		assertEquals(6, totalEdges);
+		assertEquals(16, totalCost);
+	}
 
 }
