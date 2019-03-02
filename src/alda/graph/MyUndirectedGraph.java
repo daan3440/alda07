@@ -309,9 +309,16 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>(); 
 		MyNode<T> start = nodesT.poll();
 		MyEdge<T> startEdge = edges.poll();
+		List<MyNode<T>> mst = new LinkedList<MyNode<T>>(); //nånting 
+		List<MyEdge<T>> mstEdges = new LinkedList<MyEdge<T>>(); //nånting 
 		//Möjlighet att börja med både Edge o Node.
 		//Vi ska testa med Edge först!
 		
+//		Edges 
+//			samling med noder
+//			minEdges av alla  i samlingen.
+//				samling med noder
+		mst.add(start);
 		/**
 		 * Start at any node in the graph
 		Mark the starting node as reached
