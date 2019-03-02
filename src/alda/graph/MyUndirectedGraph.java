@@ -10,29 +10,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Collections;
 import java.util.Set;
 
-class MyNode<T>{
+class MyNode<T> implements Comparable{
 	boolean known = false;
 
-	public MyNode(T data) {
+	public MyNode(T data){
 		this.data = data;
 	}
 	public T data;
 	public HashMap<MyNode<T>, Integer> neighbourMap = new HashMap<>();
+	public HashMap<Integer, HashMap<MyNode<T>, Integer>> costMap = new HashMap<>();
 	public LinkedList<T> visitedNodes = new LinkedList<T>();
-
+	
+	@Override
 	public int hashCode() {
 		return data.toString().hashCode();
 	}
 	
-	public int compareTo(MyNode<T> other){
-		
-	    return this.compareTo(other);
-	  }
-	
+	@Override
 	public boolean equals(Object other) {
 		if (other instanceof MyNode<?>) {
 			MyNode<T> inner = (MyNode<T>) other;
@@ -41,16 +40,54 @@ class MyNode<T>{
 		}
 		return false;
 	}
+	@Override
+	public int compareTo(Object o) {
+		MyNode<T> other = null;
+		if(o instanceof MyNode<?>) {
+			other = (MyNode<T>) o;
+		}
+		if (other == null)
+			return 1;
+		if ((Collections.min(this.neighbourMap.values()) < Collections.min(other.neighbourMap.values())))
+			return -1;
+		if ((Collections.min(this.neighbourMap.values()) > Collections.min(other.neighbourMap.values())))
+			return 1;
+		return 0;
+	}
 
 
 }
+//class MyEdge<T> {//implements Comparable{
+//	MyNode<T> start = null;
+//	MyNode<T> goal = null;
+//	int cost = 0;
+//	public MyEdge(MyNode<T> n1, MyNode<T> n2, int cost){	
+//		this.start = n1;
+//		this. goal = n2;
+//		this.cost = cost;
+//	}
+//	
+//	public HashMap<Integer, MyEdge<T>> startGoal = new HashMap<>();
+//	
+////	public Object compareTo(Object o) {
+////		MyNode<T> other;
+////		if(o instanceof MyNode<?>) {
+////			other = (MyNode<T>) o;
+////			return null;
+////		}
+////		return null;
+////	}
+//	
+//	
+//}
 
 public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	int nrNodes;
 	int nrEdges;
 	List<MyNode<T>> nodes = new ArrayList<>(); //bättre samling?
-	HashSet<MyNode<T>> nodesT = new HashSet<>(); //for spanning
+//	HashSet<MyNode<T>> nodesT = new HashSet<>(); //for spanning
+	PriorityQueue<MyNode<T>> nodesT = new PriorityQueue<MyNode<T>>();
 
 	@Override
 	public int getNumberOfNodes() {
@@ -69,7 +106,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			return false;
 		} else {
 			nodes.add(addedNode);
-			nodesT.add(addedNode);
 			++nrNodes;
 			return true;
 		}
@@ -115,7 +151,13 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			return false;
 		} else {
 			n1.neighbourMap.put(n2, cost);
+//			n1.costMap.put(cost, n1.neighbourMap);
+//			System.out.println(nodesT.size() + " preAdd NodesT");
+			nodesT.add(n1);
 			n2.neighbourMap.put(n1, cost);
+//			n2.costMap.put(cost, n2.neighbourMap);
+			nodesT.add(n2);
+//			System.out.println(nodesT.size() + " postAdd NodesT");
 			++nrEdges;
 			// förbättring på koden?
 			return true;
@@ -153,6 +195,24 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		}
 		return cost;
 	}
+
+//	public MyNode<T> getMinCost() {
+//		MyNode<T> min = null;
+//		int cost = 0;
+//		//		System.out.println(node1 + " " + node2);
+//		MyNode<T> n1 = new MyNode<T>(node1);
+//		MyNode<T> n2 = new MyNode<T>(node2);
+//		if (!nodes.contains(n1) || !nodes.contains(n2)) {
+//			cost = -1;
+//		} else {
+//			for (MyNode<T> cmpNode : nodes) {
+//				if (cmpNode.equals(n1) && n2 != null) {
+//					cost = cmpNode.neighbourMap.get(n2);
+//				}
+//			}
+//		}
+//		return min;
+//	}
 
 	//Depth first
 	private List<T> depthList = new LinkedList<>();
@@ -235,7 +295,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
 		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>(); 
-//		MyNode<T> start = Collections.min(nodesT);
+		MyNode<T> start = nodesT.poll();
 		
 		return minSpan;
 	}
