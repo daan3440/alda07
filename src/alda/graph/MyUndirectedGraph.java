@@ -58,29 +58,36 @@ class MyNode<T> implements Comparable{
 
 
 }
-//class MyEdge<T> {//implements Comparable{
-//	MyNode<T> start = null;
-//	MyNode<T> goal = null;
-//	int cost = 0;
-//	public MyEdge(MyNode<T> n1, MyNode<T> n2, int cost){	
-//		this.start = n1;
-//		this. goal = n2;
-//		this.cost = cost;
-//	}
-//	
-//	public HashMap<Integer, MyEdge<T>> startGoal = new HashMap<>();
-//	
-////	public Object compareTo(Object o) {
-////		MyNode<T> other;
-////		if(o instanceof MyNode<?>) {
-////			other = (MyNode<T>) o;
-////			return null;
-////		}
-////		return null;
-////	}
-//	
-//	
-//}
+class MyEdge<T> implements Comparable{
+	MyNode<T> start = null;
+	MyNode<T> goal = null;
+	int cost = 0;
+	
+	public MyEdge(MyNode<T> n1, MyNode<T> n2, int cost){	
+		this.start = n1;
+		this. goal = n2;
+		this.cost = cost;
+	}
+	
+	public HashMap<Integer, MyEdge<T>> startGoal = new HashMap<>();
+	
+	public int compareTo(Object o) {
+		MyEdge<T> other = null;
+		if(o instanceof MyEdge<?>) {
+			other = (MyEdge<T>) o;
+		}
+		if (other == null)
+			return 1;
+		if (this.cost < other.cost)
+			return -1;
+		if (this.cost < other.cost)
+			return 1;
+		return 0;
+		
+	}
+	
+	
+}
 
 public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
@@ -88,6 +95,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	int nrEdges;
 	List<MyNode<T>> nodes = new ArrayList<>(); //bättre samling?
 	PriorityQueue<MyNode<T>> nodesT = new PriorityQueue<MyNode<T>>();
+	PriorityQueue<MyEdge<T>> edges = new PriorityQueue<MyEdge<T>>();
 //	HashSet<MyNode<T>> nodesT = new HashSet<>(); //for spanning
 
 	@Override
@@ -159,6 +167,8 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 //			n2.costMap.put(cost, n2.neighbourMap);
 			nodesT.add(n2);
 //			System.out.println(nodesT.size() + " postAdd NodesT");
+			MyEdge<T> addEdge = new MyEdge<T>(n1, n2, cost);
+			edges.add(addEdge);
 			++nrEdges;
 			// förbättring på koden?
 			return true;
@@ -298,6 +308,10 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	public UndirectedGraph<T> minimumSpanningTree() {
 		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>(); 
 		MyNode<T> start = nodesT.poll();
+		MyEdge<T> startEdge = edges.poll();
+		//Möjlighet att börja med både Edge o Node.
+		//Vi ska testa med Edge först!
+		
 		/**
 		 * Start at any node in the graph
 		Mark the starting node as reached
