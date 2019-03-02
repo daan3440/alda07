@@ -46,6 +46,7 @@ class MyNode<T> implements Comparable{
 		if(o instanceof MyNode<?>) {
 			other = (MyNode<T>) o;
 		}
+//		System.out.println(Collections.min(this.neighbourMap.values()));
 		if (other == null)
 			return 1;
 		if ((Collections.min(this.neighbourMap.values()) < Collections.min(other.neighbourMap.values())))
@@ -86,8 +87,8 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	int nrNodes;
 	int nrEdges;
 	List<MyNode<T>> nodes = new ArrayList<>(); //bättre samling?
-//	HashSet<MyNode<T>> nodesT = new HashSet<>(); //for spanning
 	PriorityQueue<MyNode<T>> nodesT = new PriorityQueue<MyNode<T>>();
+//	HashSet<MyNode<T>> nodesT = new HashSet<>(); //for spanning
 
 	@Override
 	public int getNumberOfNodes() {
@@ -291,12 +292,47 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		return null;
 	}
 
-
+//	HashMap<MyNode<T>, >
+	
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
 		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>(); 
 		MyNode<T> start = nodesT.poll();
+		/**
+		 * Start at any node in the graph
+		Mark the starting node as reached
+		*/
+		//Lägg tilll samling
 		
+		/**
+		Mark all the other nodes in the graph as unreached
+		**/         
+		//Vi behåller dem i nodes lr nodesT
+		/**
+		 * Right now, the Minimum cost Spanning Tree (MST) consists of the starting node
+			
+		We expand the MST with the procedure given below....
+			
+		Find an edge e with minimum cost in the graph that connects:
+**/
+		// start.neighbourMap(foundNode)
+		 //node = Collections.min(start.neighbourMap.values()
+		 //	!mstList.contains()
+		 
+	/**	A reached node x to an unreached node y         
+		Add the edge e found in the previous step to the Minimum cost Spanning Tree
+		Mark the unreached node y as reached
+
+		Repeat the steps 2 and 3 until all nodes in the graph have become reached
+		**/
+		//nodesT.size == mst.size()
+		
+		// addAll i samlingen mst to Grafen minSpan
+		//mst bör vara ne samling som är enkel att iterera över.
+		
+		/**
+		 * 
+		 */
 		return minSpan;
 	}
 
