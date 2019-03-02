@@ -353,11 +353,11 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			MyNode<T> n = queue.poll();		
 			n.visitedNodes.add(n.data);
 
-			for (MyNode<T> mn2 : n.neighbourMap.keySet()) {
-				if (!mn2.known) {
-					mn2.visitedNodes.addAll(n.visitedNodes);
-					queue.add(mn2);
-					mn2.known = true;
+			for (MyNode<T> cmpN : n.neighbourMap.keySet()) {
+				if (!cmpN.known) {
+					cmpN.visitedNodes.addAll(n.visitedNodes);
+					queue.add(cmpN);
+					cmpN.known = true;
 				}
 			}
 			current=queue.peek();			
