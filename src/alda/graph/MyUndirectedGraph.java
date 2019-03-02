@@ -51,7 +51,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public int getNumberOfEdges() {
-
 		return nrEdges;
 	}
 
@@ -66,27 +65,27 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			return true;
 		}
 	}
-	
+
 	@Override
 	public boolean connect(T node1, T node2, int cost) {
-		
+
 		MyNode<T> n1 = null;
 		MyNode<T> n2 = null;
 
-//		nodes.forEach(cmpN -> {
-//			if (cmpN.data.equals(node2)) { 
-//				n2 = cmpN;
-//				}
-//						});
-//		nodes.forEach(cmpN -> {
-//			if (cmpN.data.equals(node1)) { 
-//				n1 = cmpN;
-//				}
-//		});
-		
-	
-		
-		
+		//		nodes.forEach(cmpN -> {
+		//			if (cmpN.data.equals(node2)) { 
+		//				n2 = cmpN;
+		//				}
+		//						});
+		//		nodes.forEach(cmpN -> {
+		//			if (cmpN.data.equals(node1)) { 
+		//				n1 = cmpN;
+		//				}
+		//		});
+
+
+
+
 		for (MyNode<T> cmpN : nodes) {
 
 			if (cmpN.data.equals(node2)) {
@@ -108,6 +107,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		} else {
 			n1.neighbourMap.put(n2, cost);
 			n2.neighbourMap.put(n1, cost);
+			++nrEdges;
 			// förbättring på koden?
 			return true;
 		}
@@ -167,21 +167,15 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 				tmp = cmpN;
 				break;
 			}
-		}
+		}		
 		if (tmp == null) {
 			return stack;
 		}
 		Set<MyNode<T>> set = tmp.neighbourMap.keySet();
-
 		stack.add(current.data);
-		if (current.data.equals(goal.data)) {
-			if (depthList.isEmpty()) {
-				depthList.addAll(stack);
-			}
-			if (stack.size() < depthList.size()) { //From  A to J, Same 2 Same
-				depthList.clear();
-				depthList.addAll(stack);
-			}
+		if (current.data.equals(goal.data) && (depthList.isEmpty() || stack.size() < depthList.size())) {
+			depthList.clear();
+			depthList.addAll(stack);
 			stack.remove(stack.size() - 1);
 			return depthList;
 		}
@@ -363,7 +357,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			current=queue.peek();			
 		}
 		if (current.data.equals(end)) {
-			current.visitedNodes.add(current.data);// 加他自己
+			current.visitedNodes.add(current.data);// add self
 			return current.visitedNodes;
 		}
 		return null;
