@@ -59,8 +59,8 @@ class MyNode<T> implements Comparable{
 
 }
 class MyEdge<T> implements Comparable{
-	MyNode<T> start = null;
-	MyNode<T> goal = null;
+	private MyNode<T> start = null;
+	private MyNode<T> goal = null;
 	int cost = 0;
 	
 	public MyEdge(MyNode<T> n1, MyNode<T> n2, int cost){	
@@ -70,6 +70,13 @@ class MyEdge<T> implements Comparable{
 	}
 	
 	public HashMap<Integer, MyEdge<T>> startGoal = new HashMap<>();
+	
+	public MyNode<T> getStartNode(){
+		return start;
+	}
+	public MyNode<T> getGoalNode(){
+		return goal;
+	}
 	
 	public int compareTo(Object o) {
 		MyEdge<T> other = null;
@@ -91,11 +98,9 @@ class MyEdge<T> implements Comparable{
 
 public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
-	int nrNodes;
-	int nrEdges;
+	private int nrNodes;
+	private int nrEdges;
 	List<MyNode<T>> nodes = new ArrayList<>(); //bättre samling?
-	PriorityQueue<MyNode<T>> nodesT = new PriorityQueue<MyNode<T>>();
-	PriorityQueue<MyEdge<T>> edges = new PriorityQueue<MyEdge<T>>();
 //	HashSet<MyNode<T>> nodesT = new HashSet<>(); //for spanning
 
 	@Override
@@ -141,6 +146,13 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 
 		for (MyNode<T> cmpN : nodes) {
+			if (cmpN.data.equals(node1)) {
+				n1 = cmpN;
+				// cmpN.neighbourMap.put(n2, cost);
+				break;
+			}
+		}
+		for (MyNode<T> cmpN : nodes) {
 
 			if (cmpN.data.equals(node2)) {
 				// cmpN.neighbourMap.put(n2, cost);
@@ -148,15 +160,8 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 				break;
 			}
 		}
-		for (MyNode<T> cmpN : nodes) {
-			if (cmpN.data.equals(node1)) {
-				n1 = cmpN;
-				// cmpN.neighbourMap.put(n2, cost);
-				break;
-			}
-		}
 
-		if (cost <= 0 || !nodes.contains(n1) || !nodes.contains(n2)) {
+		if (!nodes.contains(n1) || !nodes.contains(n2)|| cost <= 0) {
 			return false;
 		} else {
 			n1.neighbourMap.put(n2, cost);
@@ -169,7 +174,9 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 //			System.out.println(nodesT.size() + " postAdd NodesT");
 			MyEdge<T> addEdge = new MyEdge<T>(n1, n2, cost);
 			edges.add(addEdge);
-			++nrEdges;
+			nrEdges++;
+//			System.out.println(getNumberOfNodes() + " Nodes");
+//			System.out.println(getNumberOfEdges() + " Edges");
 			// förbättring på koden?
 			return true;
 		}
@@ -200,7 +207,13 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		} else {
 			for (MyNode<T> cmpNode : nodes) {
 				if (cmpNode.equals(n1) && n2 != null) {
-					cost = cmpNode.neighbourMap.get(n2);
+					try {
+						cost = cmpNode.neighbourMap.get(n2);
+					} catch (NullPointerException e) {
+						
+					}
+				
+
 				}
 			}
 		}
@@ -303,57 +316,139 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	}
 
 //	HashMap<MyNode<T>, >
+	/**
+	 * Disjoint set class, using union by rank and path compression
+	 * Elements in the set are numbered starting at 0
+	 * @author Mark Allen Weiss
+	 */
+//	class DisjointSet{
+//		private MyNode<T>[] set;		//the disjoint set as an array
+//
+//		public MyNode<T>[] getSet(){		//mostly debugging method to print array
+//			return set;
+//		}
+//
+//		/**
+//		 * Construct the disjoint sets object.
+//		 * @param numElements the initial number of disjoint sets.
+//		 */
+//		public DisjointSet(int numElements) {		//constructor creates singleton sets
+//			set = (MyNode<T>[]) new Object[numElements];
+////			for(int i = 0; i < set.length; i++){		//initialize to -1 so the trees have nothing in them
+////				set[i] = -1;
+////			}
+//			int i = 0;
+//			for(MyNode<T> node : nodes){		//initialize to -1 so the trees have nothing in them
+//				set[i] = node;
+//				i++;
+//			}
+//		}
+//
+//		/**
+//		 * Union two disjoint sets using the height heuristic.
+//		 * For simplicity, we assume root1 and root2 are distinct
+//		 * and represent set names.
+//		 * @param root1 the root of set 1.
+//		 * @param root2 the root of set 2.
+//		 */
+//		public void union(MyNode<T> root1, MyNode<T >root2) {
+//			
+//			if(set[root2].compareTo(roo1) < set[root1]){		// root2 is deeper
+//				set[root1] = root2;		// Make root2 new root
+//			}
+//			else {
+//				if(set[root1] == set[root2]){
+//					set[root1]--;			// Update height if same
+//				}
+//				set[root2] = root1;		// Make root1 new root
+//			}
+//		}
+//
+//		/**
+//		 * Perform a find with path compression.
+//		 * Error checks omitted again for simplicity.
+//		 * @param x the element being searched for.
+//		 * @return the set containing x.
+//		 */
+//		public int find(int x) {
+//			if(set[x] < 0){		//If tree is a root, return its index
+//				return x;
+//			}
+//			int next = x;		
+//			while(set[next] > 0){		//Loop until we find a root
+//				next=set[next];
+//			}
+//			return next;
+//		}
+//		
+//	}
+	PriorityQueue<MyNode<T>> nodesT = new PriorityQueue<MyNode<T>>();
+	PriorityQueue<MyEdge<T>> edges = new PriorityQueue<MyEdge<T>>();
 	
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
 		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>(); 
-		MyNode<T> start = nodesT.poll();
-		MyEdge<T> startEdge = edges.poll();
-		List<MyNode<T>> mst = new LinkedList<MyNode<T>>(); //nånting 
-		List<MyEdge<T>> mstEdges = new LinkedList<MyEdge<T>>(); //nånting 
+//		MyNode<T> start = nodesT.poll();
+//		MyEdge<T> startEdge = edges.poll();
+		List<MyNode<T>> mstSet = new ArrayList<MyNode<T>>(); //nånting 
+		List<MyEdge<T>> mstEdges = new ArrayList<MyEdge<T>>(); //nånting 
+		List<MyNode<T>> tmp = new ArrayList<MyNode<T>>(); //nånting
 		//Möjlighet att börja med både Edge o Node.
 		//Vi ska testa med Edge först!
-		
+//		DisjointSet nodeSet = new DisjointSet(getNumberOfNodes()+1);
 //		Edges 
 //			samling med noder
 //			minEdges av alla  i samlingen.
 //				samling med noder
-		mst.add(start);
-		/**
-		 * Start at any node in the graph
-		Mark the starting node as reached
-		*/
-		//Lägg tilll samling
-		
-		/**
-		Mark all the other nodes in the graph as unreached
-		**/         
-		//Vi behåller dem i nodes lr nodesT
-		/**
-		 * Right now, the Minimum cost Spanning Tree (MST) consists of the starting node
+//		System.out.println("PRe For");
+		int check2 = edges.size();
+		int check = nodesT.size();
+		if (check > 0){
+			System.out.println("nodesT: " + check + " edges: " + check2);
 			
-		We expand the MST with the procedure given below....
+		}
+		for (int i =0 ; i < edges.size() && mstEdges.size()<(getNumberOfNodes()-1); i++) {
+//		for (int i = 0; i<10;i++){
+//			System.out.println(" for loops");
+			MyEdge<T> currentE = edges.poll();
+			MyNode<T> root1 = currentE.getStartNode();
+			MyNode<T> root2 = currentE.getGoalNode();
+			tmp.clear();
+//			if(root2 != null)
+//				System.out.println("root1 NotNULL");
+//		}
 			
-		Find an edge e with minimum cost in the graph that connects:
-**/
-		// start.neighbourMap(foundNode)
-		 //node = Collections.min(start.neighbourMap.values()
-		 //	!mstList.contains()
-		 
-	/**	A reached node x to an unreached node y         
-		Add the edge e found in the previous step to the Minimum cost Spanning Tree
-		Mark the unreached node y as reached
-
-		Repeat the steps 2 and 3 until all nodes in the graph have become reached
-		**/
-		//nodesT.size == mst.size()
-		
-		// addAll i samlingen mst to Grafen minSpan
-		//mst bör vara ne samling som är enkel att iterera över.
-		
-		/**
-		 * 
-		 */
+			if(!root1.equals(root2) && !(mstSet.contains(root1) && mstSet.contains(root2)) ) {
+				tmp = mstSet;
+				mstEdges.add(currentE);
+				mstSet.add(root1);
+				mstSet.add(root2);
+//				if(mstSet.contains(root1)) {
+//					System.out.println("root1 in mstSet");
+//				}
+//				if(!mstSet.contains(root2)) {
+//				System.out.println("root2 in mstSet");
+//
+//				}
+			}
+			
+		}
+		System.out.println(mstEdges.size() + " mstEdges");
+		for (MyEdge<T> edge : mstEdges) {
+			MyNode<T> n1 = edge.getStartNode();
+			MyNode<T> n2 = edge.getGoalNode();
+			int cost = edge.cost;
+			if(!minSpan.nodesT.contains(n1))
+				minSpan.add(n1.data);
+//			System.out.println(minSpan.getNumberOfNodes() + " nodes minSpan");
+			if(!minSpan.nodesT.contains(n2))
+				minSpan.add(n2.data);
+//			System.out.println(minSpan.getNumberOfNodes() + " nodes minSpan 2");
+			if(!minSpan.edges.contains(edge))
+				minSpan.connect(n1.data, n2.data, cost);
+//			System.out.println(minSpan.getNumberOfEdges() + " edges minSpan");
+		}
+	
 		return minSpan;
 	}
 
