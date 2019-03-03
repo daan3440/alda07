@@ -387,12 +387,11 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
-		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>(); 
 //		MyNode<T> start = nodesT.poll();
 //		MyEdge<T> startEdge = edges.poll();
-		List<MyNode<T>> mstSet = new ArrayList<MyNode<T>>(); //nånting 
+		Set<MyNode<T>> mstSet = new HashSet<MyNode<T>>(); //nånting 
 		List<MyEdge<T>> mstEdges = new ArrayList<MyEdge<T>>(); //nånting 
-		List<MyNode<T>> tmp = new ArrayList<MyNode<T>>(); //nånting
+		Set<MyNode<T>> tmp = new HashSet<MyNode<T>>(); //nånting
 		//Möjlighet att börja med både Edge o Node.
 		//Vi ska testa med Edge först!
 //		DisjointSet nodeSet = new DisjointSet(getNumberOfNodes()+1);
@@ -402,9 +401,9 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 //				samling med noder
 //		System.out.println("PRe For");
 		int check2 = edges.size();
-		int check = nodesT.size();
+		int check = nodes.size();
 		if (check > 0){
-			System.out.println("nodesT: " + check + " edges: " + check2);
+			System.out.println("nodes: " + check + " edges: " + check2);
 			
 		}
 		for (int i =0 ; i < edges.size() && mstEdges.size()<(getNumberOfNodes()-1); i++) {
@@ -434,14 +433,15 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			
 		}
 		System.out.println(mstEdges.size() + " mstEdges");
+		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>();
 		for (MyEdge<T> edge : mstEdges) {
 			MyNode<T> n1 = edge.getStartNode();
 			MyNode<T> n2 = edge.getGoalNode();
 			int cost = edge.cost;
-			if(!minSpan.nodesT.contains(n1))
+			if(!minSpan.nodes.contains(n1))
 				minSpan.add(n1.data);
 //			System.out.println(minSpan.getNumberOfNodes() + " nodes minSpan");
-			if(!minSpan.nodesT.contains(n2))
+			if(!minSpan.nodes.contains(n2))
 				minSpan.add(n2.data);
 //			System.out.println(minSpan.getNumberOfNodes() + " nodes minSpan 2");
 			if(!minSpan.edges.contains(edge))
