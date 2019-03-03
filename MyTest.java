@@ -13,12 +13,12 @@ import org.junit.Test;
 
 public class MyTest {
 	public static void main(String[] args) {
-		new MyTest().testBreadthFirstSearchFromAToJ();
+	//	new MyTest().testBreadthFirstSearchFromAToJ();
 		new MyTest().own();
 	}
 
 	private void own() {
-		createExampleGraph();
+		testMinimumSpanningTree();
 
 	}
 
@@ -78,36 +78,29 @@ System.out.println(path);
 		testBreadthFirstSearch("A", "A", 5);
 
 	}
-
-	private void testDepthFirstSearch(String start, String end, int minimumPathLength) {
+	@Test
+	public void testMinimumSpanningTree() {
 		createExampleGraph();
-		List<String> path = graph.depthFirstSearch(start, end);
+		UndirectedGraph<String> mst = graph.minimumSpanningTree();
+		int totalEdges = 0;
+		int totalCost = 0;
 
-		System.out.println(path.size());
-		//System.out.println(path);
-	//	System.out.println(minimumPathLength);
-		//assertTrue(path.size() <= graph.getNumberOfNodes());
-
-		//testPath(start, end, path);
-	}
-
-	public void testDepthFirstSearchFromAToJ() {
-		testDepthFirstSearch("A", "A", 5);
-	}
-
-//	public void testDepthFirstSearchFromJToA() {
-//		testDepthFirstSearch("J", "A", 5);
-//	}
-//
-//	public void testDepthFirstSearchFromFToE() {
-//		testDepthFirstSearch("F", "E", 3);
-//	}
-
-	public void testDepthFirstSearchToSameNode() {
-		for (String node : STANDARD_NODES) {
-			graph = new MyUndirectedGraph<>();
-			testDepthFirstSearch(node, node, 1);
+		for (char node1 = 'A'; node1 <= 'J'; node1++) {
+			for (char node2 = node1; node2 <= 'J'; node2++) {
+				int cost = mst.getCost("" + node1, "" + node2);
+				if (cost > -1) {
+					totalEdges++;
+					totalCost += cost;
+				}
+			}
 		}
+
+		assertEquals(9, totalEdges);
+		assertEquals(45, totalCost);
 	}
+
+	// Här börjar vi använda andra grafer
+	
+
 
 }

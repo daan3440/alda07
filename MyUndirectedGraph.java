@@ -1,5 +1,5 @@
 package alda.graph;
-
+//Yelin Xu yexu9615
 import java.util.*;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +37,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	int numberOfNodes;
 	int numberOfEdges;
-	HashSet<MyNode<T>> hs = new HashSet<>();
+	public HashSet<MyNode<T>> hs = new HashSet<>();
 
 	@Override
 	public int getNumberOfNodes() {
@@ -119,18 +119,29 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public int getCost(T node1, T node2) {
-		MyNode<T> n1 = new MyNode<T>(node1);
-		MyNode<T> n2 = new MyNode<T>(node2);
-		if (!hs.contains(n1) || !hs.contains(n2)) {
-			return -1;
-		} else {
-			for (MyNode<T> mn : hs) {
-				if (mn.equals(n1)) {
-					return mn.list.get(n2);
-				}
+		MyNode<T> n1 = null;
+		MyNode<T> n2 = null;
+		for (MyNode<T> mn : hs) {
+			if (mn.data.equals(node2)) {
+				n2 = mn;
+				break;
 			}
+		}
+		for (MyNode<T> mn : hs) {
+			if (mn.data.equals(node1)) {
+				n1 = mn;
+				break;
+			}
+		}
+		if (n1 == null || n2 == null) {
 			return -1;
 		}
+		if (isConnected(node1, node2)) {
+			return n1.list.get(n2);
+		} else {
+			return -1;
+		}
+
 	}
 
 	List<T> depthList = new ArrayList<>();
@@ -179,7 +190,6 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		}
 		// if the end-node is not found in this round,go to next round
 		for (MyNode<T> nextNode : set) {
-			// TODO push the subNode
 			if (!nextNode.known) {
 				nextNode.known = true;
 				DFS(nextNode, end, null);
@@ -193,6 +203,9 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 	@Override
 	public List<T> breadthFirstSearch(T start, T end) {
 		Queue<MyNode<T>> queue = new LinkedList<>();
+		// find the corresponded node from the global hashSet
+		// only in the hashSet we can find the right reference
+		// and get access to other information. for example, visitedNodes
 		MyNode<T> current = null;
 		for (MyNode<T> mn : hs) {
 			if (mn.data.equals(start)) {
@@ -204,7 +217,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		current.known = true;
 
 		while (!queue.isEmpty() && !current.data.equals(end)) {
-			MyNode<T> n = queue.poll();		
+			MyNode<T> n = queue.poll();
 			n.visitedNodes.add(n.data);
 
 			for (MyNode<T> mn2 : n.list.keySet()) {
@@ -214,7 +227,7 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 					mn2.known = true;
 				}
 			}
-			current=queue.peek();			
+			current = queue.peek();
 		}
 		if (current.data.equals(end)) {
 			current.visitedNodes.add(current.data);// 加他自己
@@ -225,8 +238,45 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
-		// TODO Auto-generated method stub
-		return null;
+		int testNumber = 0;
+		MyUndirectedGraph<T> newGraph = new MyUndirectedGraph<T>();
+
+		MyNode<T> randomStart = null;
+		for (MyNode<T> mn : hs) {
+			randomStart = mn;
+			break;
+		}
+		HashSet<MyNode<T>> marked = new HashSet<>();
+		marked.add(randomStart);
+		for (MyNode<T> mn : this.hs) {
+			newGraph.add(mn.data);
+		}
+
+		// newGraph.hs=this.hs;
+		newGraph.add(randomStart.data);
+		while (hs.size() > marked.size()) {
+			MyNode<T> min = null;
+			MyNode<T> minsFar = null;
+			for (MyNode<T> parent : marked) {
+				for (MyNode<T> child : parent.list.keySet()) {
+					if (!marked.contains(child) && min == null) {
+						min = child;
+						minsFar = parent;
+					} else if (!marked.contains(child) && parent.list.get(child) < minsFar.list.get(min)) {
+						min = child;
+						minsFar = parent;
+					}
+				}
+			}
+			marked.add(min);
+			int cost = minsFar.list.get(min);
+			testNumber += cost;
+			;
+			newGraph.connect(min.data, minsFar.data, cost);
+		}
+
+		return newGraph;
+
 	}
 
 }

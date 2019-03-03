@@ -189,7 +189,7 @@ public class UndirectedGraphTest {
 	public void testMinimumSpanningTree() {
 		createExampleGraph();
 		UndirectedGraph<String> mst = graph.minimumSpanningTree();
-
+		
 		int totalEdges = 0;
 		int totalCost = 0;
 
