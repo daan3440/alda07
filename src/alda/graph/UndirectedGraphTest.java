@@ -199,12 +199,12 @@ public class UndirectedGraphTest {
 			for (char node2 = node1; node2 <= 'J'; node2++) {
 				int cost = mst.getCost("" + node1, "" + node2);
 				if (cost > -1) {
+					System.out.println(cost + " cost");
 					totalEdges++;
 					totalCost += cost;
 				}
 			}
 		}
-
 		assertEquals(9, totalEdges);
 		assertEquals(45, totalCost);
 	}
@@ -245,6 +245,18 @@ public class UndirectedGraphTest {
 		assertEquals(6, totalEdges);
 		assertEquals(16, totalCost);
 	}
+	@Test
+	public void testCost() {
+		createExampleGraph();
+		int cost = graph.getCost("A", "G");
+		int cost2 = graph.getCost("G", "A");
+		int totalCost = cost+cost2;
+
+		assertEquals(3, cost);
+		assertEquals(3, cost2);
+		assertEquals(6, totalCost);
+	}
+
 	
 
 }

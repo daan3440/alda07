@@ -60,13 +60,43 @@ class MyNode<T> implements Comparable{
 }
 class MyEdge<T> implements Comparable{
 	private MyNode<T> start = null;
+	private int vertex1;
+	private int vertex2;
 	private MyNode<T> goal = null;
-	int cost = 0;
+	private MyNode<T> startBack = null;
+	private MyNode<T> goalStart = null;
+	private int cost;
 	
 	public MyEdge(MyNode<T> n1, MyNode<T> n2, int cost){	
 		this.start = n1;
+		this.startBack = n2;
+//		String s = n1.data.toString();
+//		 for(char c : s.toCharArray()) {
+//
+//		 }
+		if(n1.data.toString().length() > 1) {
+			char c = n1.data.toString().charAt(0);
+			char c1 = n1.data.toString().charAt(1);
+			this.vertex1 = c + c1 - '0';
+		}else {
+			char c = n1.data.toString().charAt(0);
+			this.vertex1 = c - '0';
+		}
+		if(n2.data.toString().length() > 1) {
+			char c2 = n2.data.toString().charAt(0);
+			char c3 = n2.data.toString().charAt(1);
+			this.vertex2 = c2 + c3 - '0';
+		}else {
+			char c2 = n2.data.toString().charAt(0);
+			
+			this.vertex2 = c2 - '0';
+		}
 		this. goal = n2;
-		this.cost = cost;
+		this. goalStart = n1;
+		if(cost <= 0)
+			this.cost=0;
+		else
+			this.cost = cost;
 	}
 	
 	public HashMap<Integer, MyEdge<T>> startGoal = new HashMap<>();
@@ -74,23 +104,58 @@ class MyEdge<T> implements Comparable{
 	public MyNode<T> getStartNode(){
 		return start;
 	}
+	public int getVertex1(){
+		return vertex1;
+	}
+	public int getVertex2(){
+		return vertex2;
+	}
+	
+	public int getCost(){
+		return cost;
+	}
+	
+	
 	public MyNode<T> getGoalNode(){
 		return goal;
 	}
+	@Override
+	public int hashCode() {
+		return (start.toString()+goal.toString()).hashCode();
+	}
 	
-	public int compareTo(Object o) {
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof MyEdge<?>) {
+			MyEdge<T> inner = (MyEdge<T>) other;
+			if ((start.equals(inner.start) && goal.equals(inner.goal)) || (startBack.equals(inner.startBack) && goalStart.equals(inner.goalStart))) {
+				return true;
+		}
+		}
+		return false;
+	}
+//	@Override
+//	public int compareTo(Object o) {
+//		MyEdge<T> other = null;
+//		if(o instanceof MyEdge<?>) {
+//			other = (MyEdge<T>) o;
+//		}
+//		if (other == null)
+//			return 1;
+//		if (this.cost < other.cost)
+//			return -1;
+//		if (this.cost < other.cost)
+//			return 1;
+//		return 0;
+		
+	@Override
+	public int compareTo(Object o) {				//Compare based on edge weight (for sorting)
 		MyEdge<T> other = null;
 		if(o instanceof MyEdge<?>) {
 			other = (MyEdge<T>) o;
 		}
-		if (other == null)
-			return 1;
-		if (this.cost < other.cost)
-			return -1;
-		if (this.cost < other.cost)
-			return 1;
-		return 0;
-		
+		return this.getCost() - other.getCost();
+	
 	}
 	
 	
@@ -110,7 +175,8 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public int getNumberOfEdges() {
-		return nrEdges;
+		
+		return edges.size();
 	}
 
 	@Override
@@ -173,8 +239,12 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 			nodesT.add(n2);
 //			System.out.println(nodesT.size() + " postAdd NodesT");
 			MyEdge<T> addEdge = new MyEdge<T>(n1, n2, cost);
-			edges.add(addEdge);
-			nrEdges++;
+			if (!edges.contains(addEdge)) {
+				edges.add(addEdge);
+				}else {
+					edges.remove(addEdge);	
+					edges.add(addEdge);
+				}
 //			System.out.println(getNumberOfNodes() + " Nodes");
 //			System.out.println(getNumberOfEdges() + " Edges");
 			// förbättring på koden?
@@ -184,59 +254,62 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 
 	@Override
 	public boolean isConnected(T node1, T node2) {
-		MyNode<T> n1 = new MyNode<T>(node1);
-		MyNode<T> n2 = new MyNode<T>(node2);
+MyNode<T> n1 = null;
+		
+		MyNode<T> n2 = null;
+		for(MyNode<T> check :nodes) {
+			if(check.data.equals(node1)) {
+				n1 = check;
+			} 
+			if(check.data.equals(node2)) {
+				n2 = check;
+			}
+		}
 		for (MyNode<T> cmpNode : nodes) {
 			if (cmpNode.equals(n1)) {
-
 				//				return cmpNode.neighbourMap.containsKey(n2);
 				return cmpNode.neighbourMap.containsKey(n2);
 			}
 		}
 		return false;
 	}
-
+	/**
+	 * Returnerar kostnaden för att ta sig mellan två noder.
+	 * 
+	 * @param node1
+	 *            den ena noden.
+	 * @param node2
+	 *            den andra noden.
+	 * @return kostnaden för att ta sig mellan noderna eller -1 om noderna inte
+	 *         är kopplade.
+	 */
 	@Override
 	public int getCost(T node1, T node2) {
 		int cost = 0;
 		//		System.out.println(node1 + " " + node2);
-		MyNode<T> n1 = new MyNode<T>(node1);
-		MyNode<T> n2 = new MyNode<T>(node2);
-		if (!nodes.contains(n1) || !nodes.contains(n2)) {
+		MyNode<T> n1 = null;
+		
+		MyNode<T> n2 = null;
+		for(MyNode<T> check :nodes) {
+			if(check.data.equals(node1)) {
+				n1 = check;
+			} 
+			if(check.data.equals(node2)) {
+				n2 = check;
+			}
+		}
+		
+		if ((n1 == null || n2 == null) || !(isConnected(n1.data, n2.data))) {
+//					System.out.println(node1 + " " + node2);
 			cost = -1;
 		} else {
-			for (MyNode<T> cmpNode : nodes) {
-				if (cmpNode.equals(n1) && n2 != null) {
-					try {
-						cost = cmpNode.neighbourMap.get(n2);
-					} catch (NullPointerException e) {
-						
-					}
-				
-
-				}
-			}
+			cost = n1.neighbourMap.get(n2);
+//					System.out.println("cost: " + cost);
+			
 		}
 		return cost;
 	}
 
-//	public MyNode<T> getMinCost() {
-//		MyNode<T> min = null;
-//		int cost = 0;
-//		//		System.out.println(node1 + " " + node2);
-//		MyNode<T> n1 = new MyNode<T>(node1);
-//		MyNode<T> n2 = new MyNode<T>(node2);
-//		if (!nodes.contains(n1) || !nodes.contains(n2)) {
-//			cost = -1;
-//		} else {
-//			for (MyNode<T> cmpNode : nodes) {
-//				if (cmpNode.equals(n1) && n2 != null) {
-//					cost = cmpNode.neighbourMap.get(n2);
-//				}
-//			}
-//		}
-//		return min;
-//	}
 
 	//Depth first
 	private List<T> depthList = new LinkedList<>();
@@ -315,138 +388,147 @@ public class MyUndirectedGraph<T> implements UndirectedGraph<T> {
 		return null;
 	}
 
-//	HashMap<MyNode<T>, >
+//	
+	// DisjointSet class
+	//
+	// CONSTRUCTION: with int representing initial number of sets
+	//
+	// ******************PUBLIC OPERATIONS*********************
+	// void union(root1, root2) --> Merge two sets
+	// int find(x)              --> Return set containing x
+	// ******************ERRORS********************************
+	// No error checking is performed
+	// http://users.cis.fiu.edu/~weiss/dsaajava3/code/DisjSets.java
+
 	/**
 	 * Disjoint set class, using union by rank and path compression
 	 * Elements in the set are numbered starting at 0
 	 * @author Mark Allen Weiss
 	 */
-//	class DisjointSet{
-//		private MyNode<T>[] set;		//the disjoint set as an array
-//
-//		public MyNode<T>[] getSet(){		//mostly debugging method to print array
-//			return set;
-//		}
-//
-//		/**
-//		 * Construct the disjoint sets object.
-//		 * @param numElements the initial number of disjoint sets.
-//		 */
-//		public DisjointSet(int numElements) {		//constructor creates singleton sets
-//			set = (MyNode<T>[]) new Object[numElements];
-////			for(int i = 0; i < set.length; i++){		//initialize to -1 so the trees have nothing in them
-////				set[i] = -1;
-////			}
-//			int i = 0;
-//			for(MyNode<T> node : nodes){		//initialize to -1 so the trees have nothing in them
-//				set[i] = node;
-//				i++;
-//			}
-//		}
-//
-//		/**
-//		 * Union two disjoint sets using the height heuristic.
-//		 * For simplicity, we assume root1 and root2 are distinct
-//		 * and represent set names.
-//		 * @param root1 the root of set 1.
-//		 * @param root2 the root of set 2.
-//		 */
-//		public void union(MyNode<T> root1, MyNode<T >root2) {
-//			
-//			if(set[root2].compareTo(roo1) < set[root1]){		// root2 is deeper
-//				set[root1] = root2;		// Make root2 new root
-//			}
-//			else {
-//				if(set[root1] == set[root2]){
-//					set[root1]--;			// Update height if same
-//				}
-//				set[root2] = root1;		// Make root1 new root
-//			}
-//		}
-//
-//		/**
-//		 * Perform a find with path compression.
-//		 * Error checks omitted again for simplicity.
-//		 * @param x the element being searched for.
-//		 * @return the set containing x.
-//		 */
-//		public int find(int x) {
-//			if(set[x] < 0){		//If tree is a root, return its index
-//				return x;
-//			}
-//			int next = x;		
-//			while(set[next] > 0){		//Loop until we find a root
-//				next=set[next];
-//			}
-//			return next;
-//		}
-//		
-//	}
+	class DisjointSet{
+		private int[] set;		//the disjoint set as an array
+
+		public int[] getSet(){		//mostly debugging method to print array
+			return set;
+		}
+
+		/**
+		 * Construct the disjoint sets object.
+		 * @param numElements the initial number of disjoint sets.
+		 */
+		public DisjointSet(int numElements) {		//constructor creates singleton sets
+			set = new int [numElements];
+			for(int i = 0; i < set.length; i++){		//initialize to -1 so the trees have nothing in them
+				set[i] = -1;
+			}
+		}
+
+		/**
+		 * Union two disjoint sets using the height heuristic.
+		 * For simplicity, we assume root1 and root2 are distinct
+		 * and represent set names.
+		 * @param root1 the root of set 1.
+		 * @param root2 the root of set 2.
+		 */
+		public void union(int root1, int root2) {
+			if(set[root2] < set[root1]){		// root2 is deeper
+				set[root1] = root2;		// Make root2 new root
+			}
+			else {
+				if(set[root1] == set[root2]){
+					set[root1]--;			// Update height if same
+				}
+				set[root2] = root1;		// Make root1 new root
+			}
+		}
+
+		/**
+		 * Perform a find with path compression.
+		 * Error checks omitted again for simplicity.
+		 * @param x the element being searched for.
+		 * @return the set containing x.
+		 */
+		public int find(int x) {
+			System.out.println(x + " print x");
+			if(set[x] < 0){		//If tree is a root, return its index
+				return x;
+			}
+			int next = x;		
+			while(set[next] > 0){		//Loop until we find a root
+				next=set[next];
+			}
+			return next;
+		}
+		
+	}
 	PriorityQueue<MyNode<T>> nodesT = new PriorityQueue<MyNode<T>>();
-	PriorityQueue<MyEdge<T>> edges = new PriorityQueue<MyEdge<T>>();
+//	PriorityQueue<MyEdge<T>> edges = new PriorityQueue<MyEdge<T>>();
+	List<MyEdge<T>> edges = new ArrayList<MyEdge<T>>();
 	
 	@Override
 	public UndirectedGraph<T> minimumSpanningTree() {
-//		MyNode<T> start = nodesT.poll();
-//		MyEdge<T> startEdge = edges.poll();
+
+		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>();
 		Set<MyNode<T>> mstSet = new HashSet<MyNode<T>>(); //nånting 
 		List<MyEdge<T>> mstEdges = new ArrayList<MyEdge<T>>(); //nånting 
 		Set<MyNode<T>> tmp = new HashSet<MyNode<T>>(); //nånting
-		//Möjlighet att börja med både Edge o Node.
-		//Vi ska testa med Edge först!
-//		DisjointSet nodeSet = new DisjointSet(getNumberOfNodes()+1);
-//		Edges 
-//			samling med noder
-//			minEdges av alla  i samlingen.
-//				samling med noder
-//		System.out.println("PRe For");
+
 		int check2 = edges.size();
 		int check = nodes.size();
 		if (check > 0){
 			System.out.println("nodes: " + check + " edges: " + check2);
 			
 		}
+		DisjointSet nodeSet = new DisjointSet(Integer.MAX_VALUE/getNumberOfNodes());
+		
+		Collections.sort(edges);
+		
 		for (int i =0 ; i < edges.size() && mstEdges.size()<(getNumberOfNodes()-1); i++) {
-//		for (int i = 0; i<10;i++){
-//			System.out.println(" for loops");
-			MyEdge<T> currentE = edges.poll();
-			MyNode<T> root1 = currentE.getStartNode();
-			MyNode<T> root2 = currentE.getGoalNode();
+			MyEdge<T> currentE = edges.get(i);
+			System.out.println(currentE.getCost() + " edges Cost");
+			int root1 = nodeSet.find(currentE.getVertex1());
+			int root2 = nodeSet.find(currentE.getVertex2());
+//			MyNode<T> root1 = currentE.getStartNode();
+//			MyNode<T> root2 = currentE.getGoalNode();
 			tmp.clear();
 //			if(root2 != null)
 //				System.out.println("root1 NotNULL");
 //		}
 			
-			if(!root1.equals(root2) && !(mstSet.contains(root1) && mstSet.contains(root2)) ) {
-				tmp = mstSet;
-				mstEdges.add(currentE);
-				mstSet.add(root1);
-				mstSet.add(root2);
-//				if(mstSet.contains(root1)) {
+			if(root1 != root2){			//if roots are in different sets the DO NOT create a cycle
+				mstEdges.add(currentE);		//add the edge to the graph
+				nodeSet.union(root1, root2);	//union the sets
+//				unionMessage=",\tUnion("+root1+", "+root2+") done\n";		//change what's printed if a union IS performed
+			}
+//			if(!(root1.equals(root2)) && !(mstSet.contains(root1) && mstSet.contains(root2)) ) {
+//				tmp = mstSet;
+//				mstEdges.add(currentE);
+//				if(!mstSet.contains(root1)) {
+//					mstSet.add(root1);
 //					System.out.println("root1 in mstSet");
 //				}
 //				if(!mstSet.contains(root2)) {
+//					mstSet.add(root2);
 //				System.out.println("root2 in mstSet");
-//
 //				}
-			}
+//			}
 			
 		}
 		System.out.println(mstEdges.size() + " mstEdges");
-		MyUndirectedGraph<T> minSpan = new MyUndirectedGraph<T>();
+		int tmpcost = 0;
 		for (MyEdge<T> edge : mstEdges) {
 			MyNode<T> n1 = edge.getStartNode();
 			MyNode<T> n2 = edge.getGoalNode();
-			int cost = edge.cost;
+//			int cost = edge.cost;
 			if(!minSpan.nodes.contains(n1))
 				minSpan.add(n1.data);
-//			System.out.println(minSpan.getNumberOfNodes() + " nodes minSpan");
 			if(!minSpan.nodes.contains(n2))
 				minSpan.add(n2.data);
-//			System.out.println(minSpan.getNumberOfNodes() + " nodes minSpan 2");
-			if(!minSpan.edges.contains(edge))
-				minSpan.connect(n1.data, n2.data, cost);
-//			System.out.println(minSpan.getNumberOfEdges() + " edges minSpan");
+			if(!minSpan.edges.contains(edge)) {
+				minSpan.connect(n1.data, n2.data, edge.getCost());
+//				tmpcost += cost;
+//			System.out.println(tmpcost + " tmpCost");
+			}
 		}
 	
 		return minSpan;
